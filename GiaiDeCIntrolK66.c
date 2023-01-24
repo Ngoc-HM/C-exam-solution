@@ -10,7 +10,7 @@ typedef struct hanghoa
     char ID[100];
     int chieudai, chieucao, chieurong;
     double trongluongtinhphi, trongluongtinh, trongluongquydoi;
-    long long int tinhtienvanchuyen;
+    long int tinhtienvanchuyen;
     int loaivanchuyen;
     // 1 vận chuyển nhanh, 0 vận chuyển thường
 } hanghoa;
@@ -123,10 +123,11 @@ void tinhtien(hanghoa buupham[], int n)
         else
         {
             int trongluong = buupham[i].trongluongtinhphi - 3;
-            if (buupham[i].tinhtienvanchuyen == 0)
-                buupham[i].tinhtienvanchuyen = 16500 + (trongluong / 0.5) * 2500;
+
+            if (buupham[i].loaivanchuyen == 0)
+                buupham[i].tinhtienvanchuyen = 16500 + ((buupham[i].trongluongtinhphi - 3) * 2) * 2500;
             else
-                buupham[i].tinhtienvanchuyen = 22000 + (trongluong / 0.5) * 2500;
+                buupham[i].tinhtienvanchuyen = 22000 + ((buupham[i].trongluongtinhphi - 3) * 2) * 2500;
         }
     }
 }
@@ -144,12 +145,12 @@ void inkienhanghople(hanghoa buupham[], int n)
         {
             if (buupham[i].loaivanchuyen == 0)
             {
-                printf("\n%-15s %-20.1lf %-20s %-20lld", buupham[i].ID, buupham[i].trongluongtinhphi, "Chuyen thuong", buupham[i].tinhtienvanchuyen);
+                printf("\n%-15s %-20.1lf %-20s %-20ld", buupham[i].ID, buupham[i].trongluongtinhphi, "Chuyen thuong", buupham[i].tinhtienvanchuyen);
                 dem++;
             }
             else
             {
-                printf("\n%-15s %-20.1lf %-20s %-20lld", buupham[i].ID, buupham[i].trongluongtinhphi, "Chuyen nhanh", buupham[i].tinhtienvanchuyen);
+                printf("\n%-15s %-20.1lf %-20s %-20ld", buupham[i].ID, buupham[i].trongluongtinhphi, "Chuyen nhanh", buupham[i].tinhtienvanchuyen);
                 dem++;
             }
         }
@@ -170,8 +171,8 @@ void inphivanchuyen(hanghoa buupham[], int n)
     printf("\n========================================\n");
     printf("\nSo luong kien da nhan: %d", dem);
     printf("\nTong so tien cuoc %d : ", S);
-    long long int VAT = S * 0.1;
-    printf("\nVAT: %lld");
+    long long int VAT = S * 0.08;
+    printf("\nVAT: %lld", VAT);
     VAT = VAT + S;
     printf("\nTong chi phi %lld", VAT);
 }
@@ -213,12 +214,15 @@ int main()
                     printf("\nNhap ma buu pham: ");
                     scanf("%s", buuphamBox[i].ID);
 
-                    printf("nhap chieu dai cua kien hang ");
-                    scanf("%d", &buuphamBox[i].chieudai);
-                    printf("nhap chieu rong cua kien hang ");
-                    scanf("%d", &buuphamBox[i].chieurong);
-                    printf("nhap chieu cao cua kien hang ");
-                    scanf("%d", &buuphamBox[i].chieucao);
+                    do
+                    {
+                        printf("nhap chieu dai: ");
+                        scanf("%d", &buuphamBox[i].chieudai);
+                        printf("nhap chieu rong: ");
+                        scanf("%d", &buuphamBox[i].chieurong);
+                        printf("nhap chieu cao: ");
+                        scanf("%d", &buuphamBox[i].chieucao);
+                    } while (buuphamBox[i].chieudai <= 0 || buuphamBox[i].chieurong <= 0 || buuphamBox[i].chieucao <= 0);
 
                     do
                     {
@@ -227,8 +231,11 @@ int main()
                         scanf("%d", &buuphamBox[i].loaivanchuyen);
                     } while (buuphamBox[i].loaivanchuyen > 1 || buuphamBox[i].loaivanchuyen < 0);
 
-                    printf("\n Nhap trong luong cua buu pham: ");
-                    scanf("%lf", &buuphamBox[i].trongluongtinh);
+                    do
+                    {
+                        printf("\n Nhap trong luong cua buu pham: ");
+                        scanf("%lf", &buuphamBox[i].trongluongtinh);
+                    } while (buuphamBox[i].trongluongtinh <= 0);
 
                     printf("\nbuu pham ban gui so %d \n  Thong tin nhu sau : \n", i + 1);
                     printf("    kich thuoc %d(cm) x %d(cm) x %d(cm) ", buuphamBox[i].chieudai, buuphamBox[i].chieurong, buuphamBox[i].chieucao);
@@ -241,7 +248,10 @@ int main()
                 }
             }
             else
-                printf("\nBan da nhap so lieu roi\n");
+            {
+                system("cls");
+                printf("\nBan da nhap so lieu roi, chon chuc nang khac...\n");
+            }
         }
 
         if (chucnang == 2)
